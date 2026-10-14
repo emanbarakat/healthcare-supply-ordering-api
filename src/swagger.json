@@ -1,0 +1,2177 @@
+{
+    "openapi":"3.0.0",
+    "info":{
+        "title":"Life API",
+        "version":"1.0.0"
+        
+    },
+    
+    "servers": [
+        {
+          "url": "http://localhost:8081",
+          "description": "Local server" 
+        },
+        {
+            "url":"https://fathomless-hollows-91408.herokuapp.com/",
+            "description": "deployed server"
+        }
+      ]
+    ,
+    "components": {
+        "schemas": {
+                "address":{
+                    "type":"object",
+                    "properties":{
+                        "clinicName":{"type":"string"},
+                        "governorate":{"type":"string"},
+                        "city":{"type":"string"},
+                        "street":{"type":"string"},
+                        "building":{"type":"string"},
+                        "details":{"type":"string"}
+                    }
+                },
+                "address2":{
+                    "type":"object",
+                    "properties":{
+                        "addressName":{"type":"string"},
+                        "governorate":{"type":"string"},
+                        "city":{"type":"string"},
+                        "street":{"type":"number"},
+                        "building":{"type":"number"},
+                        "details":{"type":"string"}
+                    }
+                },
+                "doctor":{
+                    "type": "object",
+                    "required": ["fullName","phoneNumber","password","whatsAppNumber","accountStatus"],
+                    "properties": {
+                        "fullName":{
+                                "type":"string",
+                                "description": "user full name with length >20"
+                                
+                            },
+                        "phoneNumber":{
+                            "type": "string",
+                            "description": "Egyptian phone Number"
+                            
+                        },
+                        "password":{
+                            "type": "string",
+                            "description": "complex password"
+                            
+                        },
+                        "whatsAppNumber":{
+                            "type": "string",
+                            "description": "Egyptian phone Number" 
+                           
+                        },
+                        "accountStatus":{
+                            "type": "string",
+                            "enum": ["pending","active","disactive","blocked"],
+                            "default":"pending"
+                        },
+                        "profileImage":{
+                            "type": "string"
+                        },
+                        "addresses":{
+                            "type": "array",
+                            "items":{
+                                "$ref":"#/components/schemas/address"
+                            }
+                              
+                            
+                        }
+                    }
+                }    ,
+                "pharmasist":{
+                    "type": "object",
+                    "required": ["fullName","phoneNumber","password","whatsAppNumber","accountStatus"],
+                    "properties": {
+                        "fullName":{
+                                "type":"string",
+                                "description": "user full name with length >20"
+                            },
+                        "phoneNumber":{
+                            "type": "string",
+                            "description": "Egyptian phone Number"
+                        },
+                        "password":{
+                            "type": "string",
+                            "description": "complex password"
+                                              },
+                        "whatsAppNumber":{
+                            "type": "string",
+                            "description": "Egyptian phone Number" 
+                           
+                        },
+                        "accountStatus":{
+                            "type": "string",
+                            "enum": ["pending","active","disactive","blocked"],
+                            "default":"pending"
+                        },
+                        "profileImage":{
+                            "type": "string"
+                        },
+                        "addresses":{
+                            "type": "array",
+                            "items":{
+                                "$ref":"#/components/schemas/address"
+                            }
+                              
+                            
+                        }
+                    }
+                },
+                "category":{
+                    "type":"object",
+                    "required": ["name","category_type"],
+                    "properties": {
+                        "name":{"type":"string"},
+                        "category_type":{"type": "string",
+                                "enum": ["product","medicine","accessories"]
+                                }
+                    }
+                },
+                "subcategory":{
+                    "type":"object",
+                    "required": ["name","category"],
+                    "properties": {
+                        "name":{"type":"string"},
+                        "category":{"type": "string","description": "mongoObjectId refrenec to category id"},
+                      "products":{"type":"array","items":{ "type": "string","description": "objectId"},"description": "refere to products collections"} ,
+                      "medicines":{"type":"array","items":{ "type": "string","description": "objectId"},"description": "refere to medicine collections"}  
+                    }
+                },
+                "brand":{
+                    "type":"object",
+                    "required": ["name"],
+                    "properties": {
+                        "name":{"type":"string"}
+                    }
+                },
+                "supplier":{
+                    "type": "object",
+                    "required": ["fullName","phoneNumber","whatsAppNumber","email"],
+                    "properties": {
+                        "fullName":{
+                                "type":"string",
+                                "description": "user full name with length >20"
+                                
+                            },
+                        "phoneNumber":{
+                            "type": "string",
+                            "description": "Egyptian phone Number"
+                            
+                        },
+                        "whatsAppNumber":{
+                            "type": "string",
+                            "description": "Egyptian phone Number" 
+                           
+                        },
+                        "email":{
+                            "type": "string"
+                        },
+                        "addresses":{
+                            "type": "array",
+                            "items":{
+                                "$ref":"#/components/schemas/address"
+                            }                            
+                        },
+                        "products":{
+                            "type": "array",
+                            "items":{
+                                "type": "string","description": "ObjectId refere to products"
+                            }
+                        },
+                        "medicines":{
+                            "type": "array",
+                            "items":{
+                                "type": "string","description": "ObjectId refere to medicines"
+                            }
+                        }
+                    }
+                } ,
+                "product":{
+                    "type": "object",
+                    "required": ["name","subCategory"],
+                    "properties": {
+                        "name":{"type":"string"},
+                        "subCategory":{
+                            "type":"object",
+
+                            "properties": {
+                                "id":{"type": "string","description": "objectId refer to subcategory id"},
+                                "name":{"type": "string","description": "refere to subcategory name"}
+                            }
+                        },
+                        "brand":{
+                            "type":"object",
+
+                            "properties": {
+                                "id":{"type": "string","description": "objectId refer to brand id"},
+                                "name":{"type": "string","description": "refere to brand name"}
+                            }
+                        },
+                        "description":{"type":"string"},
+                        "offer":{"type":"string"},
+                        "images":{"type": "array",
+                        "items":{"type": "object",
+                        "properties": {
+                            "url":{"type": "string"}
+                        }
+                        },"description": "refres to images urls saved on the server folder"},
+                        "unitPrice":{"type": "number","description": "price for clients"},
+                        "basePrice":{"type": "number", "description": "base price for the product"},
+                        "stockAmount":{"type": "number"},
+                        "creditDiscount":{"type": "number"},
+                        "cashDiscount":{"type": "number"},
+                        "madeIn":{"type":"string"},
+                        "productionDate":{"type":"string"},
+                        "expireDate":{"type":"string"},
+                        "reviews":{
+                            "type": "object",
+                            "properties": {
+                                "userId":{"type":"string","description": "client id objectId"},
+                                "reviewText":{"type":"string"},
+                                "reviewRate":{"type":"number"}
+                            }
+                        }
+                    }
+                } , 
+                "order":{
+                    "type":"object",
+                    "required": ["userId","products","totalPrice","payment"],
+                    "properties": {
+                        "userId":{"type":"string","description": "objectId refer to doctor or pharmacist Id"},
+                        "products":{
+                           "type": "array",
+                           "items":{ "type": "object",
+                            "properties": {
+                                "id":{"type":"string","description": "objectId refere to product id"},
+                                "name":{"type":"string"},
+                                "quantity":{"type": "number"},
+                                "unitPrice":{"type": "number"},
+                                "image":{"type": "string","description": "refere to only first image in the collection for display"}
+                            }}
+                        },
+                        "totalPrice":{"type":"number"},
+                        "orderDate":{"type":"string"},
+                        "deliverInfo":{
+                            "type":"object",
+                            "properties": {
+                                "date":{"type": "string"},
+                                "time":{"type":"string"},
+                                "address":{"type": "object",
+                                "properties": {
+                                    "addressName":{"type": "string"},
+                                    "governorate":{"type": "string"},
+                                    "city":{"type": "string"},
+                                    "street":{"type": "number"},
+                                    "building":{"type": "string"},
+                                    "details":{"type": "string"}
+
+                                }},
+                                "flyBoy":{"type":"string","description": "objectId refer to flyboy id"}
+                            }
+                        },
+                        "orderStatus":{"type":"string","description": "pending(Defualt),delivered,cancelled,shipped,refund,on the way"}
+                        ,
+                        "payment":{
+                            "type": "object",
+                            "properties": {
+                                "method":{"type":"string"},
+                                "details":{
+                                    "type": "object",
+                                    "properties": {
+                                            "paid":{"type":"number"},
+                                            "late":{"type":"number"}
+                                            
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                }                
+        }
+    ,
+    "paths":{
+            "/register":
+            {
+                
+                "post":{
+                    "summary": "Add new doctor or pharmacist",
+                   
+                    "requestBody":{
+                        "description": "JSON object schem value with type:doctor | pharmacist",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                   "$ref":"#/components/schemas/doctor"
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "doctor or pharmacist created with generated otp"       
+                                },
+                            "403":{
+                                "description": "phone number already exists.."
+                            },
+                            "500":{       
+                                "description": "Internal Error..."
+                            }
+                        }
+                    }
+                    
+                },
+            "/login":{
+               "post":{ 
+                "summary":"login as doctor , pharmacist , admin , subadmin and flyboy depending on type value",
+                "requestBody":{
+                    "description": "JSON object",
+                   "content": {
+                       "application/json":{
+                           "schema":{
+                              "type": "object",
+                              "required": ["userName","password","type"],
+                              "properties": {
+                                  "phoneNumber":{"type":"string"},
+                                  "password":{"type":"string"},
+                                  "type":{"type":"string", "enum": ["doctor","pharmacist","flyboy","admin","subadmin"]}
+                              }
+                           }
+                        }
+                       }
+                   },
+                   "responses": {
+                        "200":{
+                                "description": "loged in with id and token values"       
+                            },
+                        "401":{
+                            "description": "phone number or password incorrect"
+                        },
+                        "403":{       
+                            "description": "you are not allowed to log in when status is blocked"
+                        }
+
+                    }}
+                
+            },
+            "/forgetpassword":{
+                "post":{
+                    "summary": " set new password with OTP",
+                    "requestBody":{
+                        "description": "JSON object schem value with type:doctor | pharmacist",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                   "type":"object",
+                                   "properties": {
+                                       "phoneNumber":{"type": "string"}
+                                   }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "user id with generated OTP "       
+                                },
+                            "500":{       
+                                "description": "Internal Error..."
+                            }
+                        }
+                }
+            },
+            "/doctor/changepassword":{
+                "post":{
+                    "tags": ["Doctor"],
+                    "summary": " set new password for doctor",
+                    "requestBody":{
+                        "description": "JSON object value to change doctor password ",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                   "type":"object",
+                                   "properties": {
+                                       "id":{"type": "string"},
+                                       "newPassword":{"type":"string"},
+                                       "oldPassword":{"type":"string"}
+                                   }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "user id with generated OTP "       
+                                },
+                            "500":{       
+                                "description": "old password not matched your saved password or new password is the same as old password or User is not exists"
+                            }
+                        }
+                }
+            },
+            "/doctor/profile":{
+                "get":{
+                    "tags": ["Doctor"],
+                    "summary": " get Doctor Profile..",
+                       "responses": {
+                            "200":{
+                                    "description": "all found users on system "       
+                                }
+                        }
+                }
+            },
+            "/doctor/suggestname/{value}":{
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": " serach by doctor name",
+                    "parameters": [{
+                        "name":"value",
+                        "in": "path",
+                        "allowEmptyValue": true,
+                        "schema":{
+                            "type": "string"
+                        }
+                    }],
+                       "responses": {
+                            "200":{
+                                    "description": "all found users on system "       
+                                }
+                        }
+                }
+            }
+            ,"/doctor/suggestphone/{value}":{
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": " serach by doctor phone",
+                    "parameters": [{
+                        "name":"value",
+                        "in": "path",
+                        "required": true,
+                        "allowEmptyValue": true,
+                        "schema":{
+                            "type": "string"
+                        }
+                    }],
+                       "responses": {
+                            "200":{
+                                    "description": "all found users on system "       
+                                }
+                        }
+                }
+            }
+
+            ,
+            "/pharmacist/changepassword":{
+                "post":{
+                    "tags": ["Pharmacist"],
+                    "summary": " set new password for pharmasist",
+                    "requestBody":{
+                        "description": "JSON object to change pharmasist password",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                   "type":"object",
+                                   "properties": {
+                                       "id":{"type": "string"},
+                                       "newPassword":{"type":"string"},
+                                       "oldPassword":{"type":"string"}
+                                   }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "user id with generated OTP "       
+                                },
+                            "500":{       
+                                "description": "old password not matched your saved password or new password is the same as old password or User is not exists"
+                            }
+                        }
+                }
+            },
+            "/pharmacist/suggestname/{value}":{
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": " serach by pharmacist name",
+                    "parameters": [{
+                        "name":"value",
+                        "in": "path",
+                        "allowEmptyValue": true,
+                        "schema":{
+                            "type": "string"
+                        }
+                    }],
+                       "responses": {
+                            "200":{
+                                    "description": "all found users on system "       
+                                }
+                        }
+                }
+            },
+            "/pharmacist/suggestphone/{value}":{
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": " serach by pharmacist phone",
+                    "parameters": [{
+                        "name":"value",
+                        "in": "path",
+                        "allowEmptyValue": true,
+                        "schema":{
+                            "type": "string"
+                        }
+                    }],
+                       "responses": {
+                            "200":{
+                                    "description": "all found users on system "       
+                                }
+                        }
+                }
+            }            ,
+            "/changestatus":{
+                "post":{
+                    "tags": ["Admin"],
+                    "summary": " change any user status",
+                    "requestBody":{
+                        "description": "JSON object to change any user status",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                   "type":"object",
+                                   "properties": {
+                                       "id":{"type": "string"},
+                                       "status":{"type":"string"},
+                                       "type":{"type":"string","enum": ["doctor","pharmacist","flyboy","subadmin"]}
+                                   }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "changed "       
+                                },
+                            "500":{       
+                                "description": " User is not exists"
+                            }
+                        }
+                }
+            },
+            "/doctor/{page}":{
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": " get all active doctors",
+                    "parameters": [{
+                        "name":"page",
+                        "in": "path",
+                        "allowEmptyValue": true,
+                        "schema":{
+                            "type": "integer",
+                            "default":"1"
+                        }
+                    }],
+                       "responses": {
+                            "200":{
+                                    "description": "all active users on system "       
+                                }
+                        }
+                }
+            },
+            "/doctor/getpending/{page}":{
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": " get all pending doctors",
+                    "parameters": [{
+                        "name":"page",
+                        "in": "path",
+                        "allowEmptyValue": true,
+                        "schema":{
+                            "type": "integer",
+                            "default":"1"
+                        }
+                    }],
+                    "responses": {
+                            "200":{
+                                    "description": "all pending users on system "       
+                                }
+                        }
+            }},
+            "/doctor/getblocked/{page}":{
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": " get all blocked doctors",
+                    "parameters": [{
+                        "name":"page",
+                        "in": "path",
+                        "allowEmptyValue": true,
+                        "schema":{
+                            "type": "integer",
+                            "default":"1"
+                        }
+                    }],
+                       "responses": {
+                            "200":{
+                                    "description": "all blocked users on system "       
+                                }
+                        }
+            }
+        },
+        "/doctor/newAddress":{
+            "put":{
+                "tags": ["Admin","Doctor"],
+               
+                "summary": "add new Address",
+                "requestBody":{
+                    "description": "JSON object to add Address",
+                   "content": {
+                       "application/json":{
+                           "schema":{
+                           "$ref":"#/components/schemas/address2"
+                           }
+                        }
+                       }
+                   }
+
+                ,
+                   "responses": {
+                        "200":{
+                                "description": " doctor data  "       
+                            }
+                    }
+        }
+    },
+            "/pharmasist/{page}":{
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": " get all active pharmasist",
+                    "parameters": [{
+                        "name":"page",
+                        "in": "path",
+                        "allowEmptyValue": true,
+                        "schema":{
+                            "type": "integer",
+                            "default":"1"
+                        }
+                    }],
+                       "responses": {
+                            "200":{
+                                    "description": "all active users on system "       
+                                }
+                        }
+                }
+            },
+            "/pharmacist/getpending/{page}":{ 
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": " get all pending pharmacist",
+                    "parameters": [{
+                        "name":"page",
+                        "in": "path",
+                        "allowEmptyValue": true,
+                        "schema":{
+                            "type": "integer",
+                            "default":"1"
+                        }
+                    }],
+                    "responses": {
+                            "200":{
+                                    "description": "all pending users on system "       
+                                }
+                        }}
+                },
+            "/pharmacist/getblocked/{page}":{
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": " get all blocked  pharmacist",
+                    "parameters": [{
+                        "name":"page",
+                        "in": "path",
+                        "allowEmptyValue": true,
+                        "schema":{
+                            "type": "integer",
+                            "default":"1"
+                        }
+                    }],
+                    "responses": {
+                            "200":{
+                                    "description": "all blocked users on system "       
+                                }
+                        }}
+            },
+            "/categories/{type}":{
+                "get":{
+                    "tags": ["Categories"],
+                    "summary": "get all categories for one of the types product,medicine,accessories",
+                    "parameters": [{
+                        "name":"type",
+                        "in": "path",
+                        "description": "category type product,medicine,accessories",
+                        "required": true,
+                        "schema":{
+                            "type": "string","description": "objectId"
+                        }
+                    }],
+                       "responses": {
+                            "200":{
+                                    "description": "all found categories on system "       
+                                }
+                        }
+                }
+            },
+            "/categories":{
+                "post":{
+                    "tags": ["Admin"],
+                    "summary": "add category with one of the types product,medicine,accessories ",
+                    "requestBody":{
+                        "description": "JSON object to add Category",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                               "properties": {
+                                        "name":{"type": "string"},
+                                        "category_type":{"type":  "string","description": "[product,medicine,accessories]"}
+                               }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "added "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+                , "put":{
+                    "tags": ["Admin"],
+                    "summary": "update category ",
+                    "requestBody":{
+                        "description": "JSON object to update Category by id",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "required": ["id"],
+                                "properties": {
+                                    "id":{"type":"string","description": "mongodb Id"},
+                                    "name":{"type":"string"},
+                                    "category_type":{"type":"string","description": "[product,medicine,accessories]"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "updated "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                },
+                "delete":{
+                    "tags": ["Admin"],
+                    "summary": "delete category ",
+                    "requestBody":{
+                        "description": "JSON object to delete Category by id",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "required": ["id"],
+                                "properties": {
+                                    "id":{"type":"string","description": "mongodb Id"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "deleted "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/subcategories/{category}":{
+                "get":{
+                    "tags": ["SubCategories"],
+                    "summary": "get all subcategories by category id",
+                    "parameters": [{
+                        "name":"category",
+                        "in": "path",
+                        "description": "category id",
+                        "required": true,
+                        "schema":{
+                            "type": "string","description": "objectId"
+                        }
+                    }],
+                       "responses": {
+                            "200":{
+                                    "description": "all found subcategories for category "       
+                                }
+                        }
+                }
+            },
+            "/subcategories":{
+                "post":{
+                    "tags": ["Admin"],
+                    "summary": "add subcategory with one of the types product,medicine,accessories ",
+                    "requestBody":{
+                        "description": "JSON object to add subCategory",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "properties": {
+                                    "name":{"type": "string"},
+                                    "category":{"type": "string","description": "mongoId for category"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "added "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+                , "put":{
+                    "tags": ["Admin"],
+                    "summary": "update subcategory ",
+                    "requestBody":{
+                        "description": "JSON object to update subCategory by id",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "required": ["id"],
+                                "properties": {
+                                    "id":{"type":"string","description": "mongodb Id"},
+                                    "name":{"type":"string"},
+                                    "category":{"type":"string","description": "refer to category id"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "updated "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                },
+                "delete":{
+                    "tags": ["Admin"],
+                    "summary": "delete subcategory ",
+                    "requestBody":{
+                        "description": "JSON object to delete Category by id",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "required": ["id"],
+                                "properties": {
+                                    "id":{"type":"string","description": "mongodb Id"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "deleted "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/subcategories/addproduct":{
+                "put":{
+                    "tags": ["Admin"],
+                    "summary": "add subcategory product",
+                    "requestBody":{
+                        "description": "JSON object to add subcategory product",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "objectId"},
+                                    "products":{"type":"array","items":{"type": "string","description": "objectId"}}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "added "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/subcategories/removeproduct":{
+                "put":{
+                    "tags": ["Admin"],
+                    "summary": "remove subcategory product",
+                    "requestBody":{
+                        "description": "JSON object to remove subcategory product",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "objectId"},
+                                    "product":{"type": "string","description": "objectId"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "removed "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            }, 
+            "/subcategories/addmedicine":{
+                "put":{
+                    "tags": ["Admin"],
+                    "summary": "add subcategory medcine",
+                    "requestBody":{
+                        "description": "JSON object to add subcategory medicine",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "objectId"},
+                                    "medicines":{"type":"array","items":{"type": "string","description": "objectId"}}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "added "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/subcategories/removemedicine":{
+                "put":{
+                    "tags": ["Admin"],
+                    "summary": "remove subcategory medicine",
+                    "requestBody":{
+                        "description": "JSON object to remove subcategory medicine",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "objectId"},
+                                    "medicine":{"type": "string","description": "objectId"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "removed "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            }
+            ,
+            "/brands":{
+                "get":{
+                    "tags": ["Brands"],
+                    "summary": "get all Brands",
+                       "responses": {
+                            "200":{
+                                    "description": "all found brands "       
+                                }
+                        }
+                }, 
+                "post":{
+                    "tags": ["Admin"],
+                    "summary": "add Brand ",
+                    "requestBody":{
+                        "description": "JSON object to add brand",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "$ref":"#/components/schemas/brand"
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "added "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+                , "put":{
+                    "tags": ["Admin"],
+                    "summary": "update brand ",
+                    "requestBody":{
+                        "description": "JSON object to update brand by id",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "required": ["id"],
+                                "properties": {
+                                    "id":{"type":"string","description": "mongodb Id"},
+                                    "name":{"type":"string"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "updated "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                },
+                "delete":{
+                    "tags": ["Admin"],
+                    "summary": "delete subcategory ",
+                    "requestBody":{
+                        "description": "JSON object to delete Brand by id",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "required": ["id"],
+                                "properties": {
+                                    "id":{"type":"string","description": "mongodb Id"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "deleted "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            }
+            ,"/brands/{id}":{
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": "get all Brands",
+                    "parameters": [{
+                        "name":"id",
+                        "in": "path",
+                        "required": true,
+                        "schema":{
+                            "type": "string","description": "objectId"
+                        }
+                    }],
+                       "responses": {
+                            "200":{
+                                    "description": "find brand by Id "       
+                                }
+                        }
+                }
+            },
+            "/suppliers":{
+                
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": "get all Suppliers",
+                       "responses": {
+                            "200":{
+                                    "description": "find Suppliers "       
+                                }
+                        }
+                }, 
+                "post":{
+                    "tags": ["Admin"],
+                    "summary": "add supplier ",
+                    "requestBody":{
+                        "description": "JSON object to add supplier",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "objectId"},
+                                    "fullName":{"type":"string"},
+                                    "phoneNumber":{"type":"string"},
+                                    "whatsAppNumber":{"type":"string"},
+                                    "email":{"type":"string"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "added "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+                , "put":{
+                    "tags": ["Admin"],
+                    "summary": "update supplier ",
+                    "requestBody":{
+                        "description": "JSON object to update supplier by id ",
+                       "content": {
+                           "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "objectId"},
+                                    "fullName":{"type":"string"},
+                                    "phoneNumber":{"type":"string"},
+                                    "whatsAppNumber":{"type":"string"},
+                                    "email":{"type":"string"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "updated "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                },
+                "delete":{
+                    "tags": ["Admin"],
+                    "summary": "delete supplier ",
+                    "requestBody":{
+                        "description": "JSON object to delete supplier by id",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "required": ["id"],
+                                "properties": {
+                                    "id":{"type":"string","description": "mongodb Id"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "deleted "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            }
+            ,"/suppliers/{id}":{
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": "get Supplier by Id",
+                    "parameters": [{
+                        "name":"id",
+                        "in": "path",
+                        "required": true,
+                        "schema":{
+                            "type": "string","description": "objectId"
+                        }
+                    }],
+                       "responses": {
+                            "200":{
+                                    "description": "findd brand by Id "       
+                                }
+                        }
+                }
+            },
+            "/suppliers/addproduct":{
+                "put":{
+                    "tags": ["Admin"],
+                    "summary": "add supplier product",
+                    "requestBody":{
+                        "description": "JSON object to add supplier product",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "objectId"},
+                                    "products":{"type":"array","items":{"type": "string","description": "objectId"}}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "added "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/suppliers/removeproduct":{
+                "put":{
+                    "tags": ["Admin"],
+                    "summary": "remove supplier product",
+                    "requestBody":{
+                        "description": "JSON object to remove supplier product",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "objectId"},
+                                    "product":{"type": "string","description": "objectId"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "removed "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            }, 
+            "/suppliers/addmedicine":{
+                "put":{
+                    "tags": ["Admin"],
+                    "summary": "add supplier medcine",
+                    "requestBody":{
+                        "description": "JSON object to add supplier medicine",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "objectId"},
+                                    "medicines":{"type":"array","items":{"type": "string","description": "objectId"}}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "added "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/suppliers/removemedicine":{
+                "put":{
+                    "tags": ["Admin"],
+                    "summary": "remove supplier medicine",
+                    "requestBody":{
+                        "description": "JSON object to remove supplier medicine",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "objectId"},
+                                    "medicine":{"type": "string","description": "objectId"}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "removed "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/suppliers/addaddress":{
+                "put":{
+                    "tags": ["Admin"],
+                    "summary": "add supplier address",
+                    "requestBody":{
+                        "description": "JSON object to add supplier address",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "objectId"},
+                                    "address":{"type":"object",
+                                        "properties": {
+                                            "addressName":{"type":"string"},
+                                            "governorate":{"type":"string"},
+                                            "city":{"type":"string"},
+                                            "street":{"type":"string"},
+                                            "building":{"type":"string"},
+                                            "details":{"type":"string"}
+                                        }}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "added "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/suppliers/removeaddress":{
+                "put":{
+                    "tags": ["Admin"],
+                    "summary": "remove supplier address",
+                    "requestBody":{
+                        "description": "JSON object to remove supplier address",
+                       "content": {
+                           "application/json":{
+                            "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "objectId"},
+                                    "address":{"type":"object",
+                                        "properties": {
+                                            "addressName":{"type":"string"},
+                                            "governorate":{"type":"string"},
+                                            "city":{"type":"string"},
+                                            "street":{"type":"string"},
+                                            "building":{"type":"number"},
+                                            "details":{"type":"string"}
+                                        }}
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "removed "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/products/random":{
+                "get":{
+                    "tags": ["Products"],
+                    "summary": "get random products for home page mobile application name unit price and one image",
+                       "responses": {
+                            "200":{
+                                    "description": "get 10 random products "       
+                                }
+                        }
+                }},
+            "/products/images/{id}":{
+                "get":{
+                    "tags": ["Admin"],
+                    "summary": "get  product images for admin and mobile application",
+                    "parameters": [{
+                        "name":"id",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema":{
+                            "type": "string","description": "objectId"
+                        }
+                    }],
+                        "responses": {
+                            "200":{
+                                    "description": "get 10 random products "       
+                                },
+                                "500":{       
+                                    "description": " problem"
+                                }
+                        }
+                }},
+            "/products/details/{id}":{
+                "get":{
+                    "tags": ["Products"],
+                    "summary": "get  product  by product id for mobile application name, unitPrice ,all images and description",
+                    "parameters": [{
+                        "name":"id",
+                        "in": "path",
+                        "description": "product id",
+                        "required": true,
+                        "schema":{
+                            "type": "string","description": "objectId"
+                        }
+                    }],
+                        "responses": {
+                            "200":{
+                                    "description": "get  product details "       
+                                },
+                                "500":{       
+                                    "description": " problem"
+                                }
+                        }
+                }},
+            "/products/subCategory/{id}":{
+                "get":{
+                    "tags": ["Products"],
+                    "summary": "get  product  by category id for specified subcategory for mobile application name, unitPrice , one image and description",
+                    "parameters": [{
+                        "name":"id",
+                        "in": "path",
+                        "description": "category id",
+                        "required": true,
+                        "schema":{
+                            "type": "string","description": "objectId"
+                        }
+                    }],
+                        "responses": {
+                            "200":{
+                                    "description": "get  product for subcategory "       
+                                },
+                                "500":{       
+                                    "description": " problem"
+                                }
+                        }
+                }},
+            "/products":{ 
+            "post":{
+                "tags": ["Admin"],
+                "summary": "add product without images ",
+                "requestBody":{
+                    "description": "JSON object to add Product",
+                    "content": {
+                        "application/json":{
+                            "schema":{
+
+                                    "properties": {
+                                        "subCategory":{"type": "string","description": "object id"},
+                                      
+                                        "name":{"type": "string"},
+                                        "unitPrice":{"type": "integer"},
+                                        "stockAmount":{"type": "integer"}
+                                    }
+                            }
+                        }
+                        }
+                    },
+                    "responses": {
+                        "200":{
+                                "description": "added "       
+                            },
+                        "500":{       
+                            "description": " problem"
+                        }
+                    }
+            }
+            , "put":{
+                "tags": ["Admin"],
+                "summary": "update Product without images ",
+                "requestBody":{
+                    "description": "JSON object to update Product by id",
+                    "content": {
+                        "application/json":{
+                            "schema":{
+                            "type": "object",
+                            "required": ["id"],
+                            "properties": {
+                                "schema":{"$ref":"#/components/schemas/product"}
+                            }
+                            }
+                        }
+                        }
+                    },
+                    "responses": {
+                        "200":{
+                                "description": "updated "       
+                            },
+                        "500":{       
+                            "description": " problem"
+                        }
+                    }
+            },
+            "delete":{
+                "tags": ["Admin"],
+                "summary": "delete Product ",
+                "requestBody":{
+                    "description": "JSON object to delete Product by id",
+                    "content": {
+                        "application/json":{
+                            "schema":{
+                            "type": "object",
+                            "required": ["id"],
+                            "properties": {
+                                "id":{"type":"string","description": "mongodb Id"}
+                            }
+                            }
+                        }
+                        }
+                    },
+                    "responses": {
+                        "200":{
+                                "description": "deleted "       
+                            },
+                        "500":{       
+                            "description": " problem"
+                        }
+                    }
+            }
+        },
+            "/products/addimage/{id}":{
+                "post":{
+                    "tags": ["Admin"],
+                    "summary": "add product image or many images ",
+                    "parameters": [{
+                        "name":"id",
+                        "in": "path",
+                        "required": true,
+                        "schema":{
+                            "type": "string","description": "objectId"
+                        }
+                    }],
+                    "requestBody":{
+                        "description": "JSON object to add Product images",
+                       "content": {
+                           "application/json":{
+                             "schema":{
+                                "type": "array",
+                                "description": "one image or array of images"
+                            }
+                           }
+                       }
+                    },
+                       "responses": {
+                            "200":{
+                                    "description": "added "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+               
+            },
+            "/products/removeimage":{
+                "put":{
+                    "tags": ["Admin"],
+                    "summary": "remove product image  ",
+                   
+                    "requestBody":{
+                        "description": "JSON object to remove Product one image",
+                       "content": {
+                           "application/json":{
+                             "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{"type":"string","description": "ObjectId for product"},
+                                    "image":{"type":"string","description": "image url"}
+                                }
+                            }
+                           }
+                       }
+                    },
+                       "responses": {
+                            "200":{
+                                    "description": "removed "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+                
+            },
+            "/doctor/addcart":{
+                "put":{
+                    "tags": ["Doctor"],
+                    "summary": "add  product to doctor's cart (id is the doctor id , product is the product id)",
+                    "requestBody":{
+                        "description": "JSON object to add product to cart",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                  
+                                    "product":{"type":"string","description": "objectId of product"},
+                                    "quantity":{"type":"number"}
+                                   
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "updated "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/doctor/addwish":{
+                "put":{
+                    "tags": ["Doctor"],
+                    "summary": "add  product to doctor's wishList (id is the doctor id , product is the product id)",
+                    "requestBody":{
+                        "description": "JSON object to add product to wishList",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                   
+                                    "product":{"type":"string","description": "objectId of product"}                                   
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "updated "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/doctor/removecart":{
+                "put":{
+                    "tags": ["Doctor"],
+                    "summary": "remove product to doctor's cart (id is the doctor id , product is the product id)",
+                    "requestBody":{
+                        "description": "JSON object to remove product from cart",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                   
+                                    "product":{"type":"string","description": "objectId of product"}                                   
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "updated "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/doctor/removewish":{
+                "put":{
+                    "tags": ["Doctor"],
+                    "summary": "remove product to doctor's wishList (id is the doctor id , product is the product id)",
+                    "requestBody":{
+                        "description": "JSON object to remove product from wishList",
+                       "content": {
+                           "application/json":{
+                               "schema":{
+                                "type": "object",
+                                "properties": {
+                                    
+                                    "product":{"type":"string","description": "objectId of product"}                                   
+                                }
+                               }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{
+                                    "description": "updated "       
+                                },
+                            "500":{       
+                                "description": " problem"
+                            }
+                        }
+                }
+            },
+            "/doctor/cart":{
+                "get":{
+                    "tags": ["Doctor"],
+                    "summary": "get  products in cart for doctor by doctor id",
+                        "responses": {
+                            "200":{
+                                    "description": "get  products in cart "       
+                                },
+                                "500":{       
+                                    "description": " problem"
+                                }
+                        }
+                }},
+             "/doctor/wish":{
+                    "get":{
+                        "tags": ["Doctor"],
+                        "summary": "get  products in wishList for doctor by doctor id",
+                        "responses": {
+                                "200":{
+                                        "description": "get  products in cart "       
+                                    },
+                                    "500":{       
+                                        "description": " problem"
+                                    }
+                            }
+                    }},
+            "/orders/doctor/confirmorder":{
+                "get":{
+                    "tags": ["Order/Doctor"],
+                    "summary": "get all data mobile need to complete confirm operation by doctor id ",
+                        "responses": {
+                            "200":{
+                                    "description": "doctor full Name , phone number , addresses,  late Money for previous orders "       
+                                },
+                                "500":{       
+                                    "description": " problem"
+                                }
+                        }
+                }},
+            "/orders/doctor/add":{
+                "post":{
+                    "tags": ["Order/Doctor"],
+                    "summary": "add new order for doctor , note that deliver infor status should be send with order data when user select an address .. order date will be the current date on adding the order , the order status will be pending by default",
+                    "requestBody":{
+                        "description": "JSON object to remove Product one image",
+                       "content": {
+                           "application/json":{
+                             "schema":{
+                                    "properties": {
+                                        "method":{"type": "string","description": "cash or credit"},
+                                        "paid":{"type": "integer"}
+                                    }
+                                }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{"description": "added " },
+                            "500":{"description": " problem"}
+                        }
+                }
+                
+            },
+            "/orders/doctor/orderDetails/{orderid}":{
+                "get":{
+                    "tags": ["Order/Doctor","Order/Admin"],
+                    "summary": "get order detials for doctor by order id ",
+                    "parameters": [{
+                        "name":"orderid",
+                        "in": "path",
+                        "required": true,
+                        "description": "order id ",
+                        "schema":{
+                            "type": "string","description": "objectId"
+                        }
+                    }],
+                        "responses": {
+                            "200":{
+                                    "description": "order details "       
+                                },
+                                "500":{       
+                                    "description": " problem"
+                                }
+                        }
+                }
+            },
+            "/orders/doctor/paymentdetails/{orderid}":{
+                "get":{
+                    "tags": ["Order/Doctor","Order/Admin"],
+                    "summary": "get payment detials for doctor by order id as total price of the order and all late money for that user  ",
+                    "parameters": [{
+                        "name":"orderid",
+                        "in": "path",
+                        "required": true,
+                        "description": "order id ",
+                        "schema":{
+                            "type": "string","description": "objectId"
+                        }
+                    }],
+                        "responses": {
+                            "200":{
+                                    "description": "order payment details as total price and all late money for that user"       
+                                },
+                                "500":{       
+                                    "description": " problem"
+                                }
+                        }
+                }
+            },
+            "/orders/doctor/trackorder/{orderid}":{
+                "get":{
+                    "tags": ["Order/Doctor","Order/Admin"],
+                    "summary": "get orderStatus payment deliverInfo for order  ",
+                    "parameters": [{
+                        "name":"orderid",
+                        "in": "path",
+                        "required": true,
+                        "description": "order id ",
+                        "schema":{
+                            "type": "string","description": "objectId"
+                        }
+                    }],
+                        "responses": {
+                            "200":{
+                                    "description": "get track Info for order"       
+                                },
+                                "500":{       
+                                    "description": " problem"
+                                }
+                        }
+                }
+            },
+            "/orders/doctor/updatepayment":{
+                "put":{
+                    "tags": ["Order/Doctor","Order/Admin"],
+                    "summary": "Note that you will use getOredrPayment before this route to update payment for order with status not delivered or cancelled and also note that paid money should be <= orderTotal price(credit) and == totalPrice(cash) otherwise backend will ignore update command",
+                    "requestBody":{
+                       "description": "don't insert late money(drived value) and payment method [cash or credit]",
+                       "content": {
+                           "application/json":{
+                              "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "id":{ "type": "string", "description": "orderId"},
+                                    "method":{"type":"string","enum": ["cash","credit"]},
+                                    "paid":{"type":"number"}
+                                   
+                                }
+                              }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{"description": "updated " },
+                            "500":{"description": " problem"}
+                        }
+                }
+                
+            },
+            "/orders/doctor/removeProduct":{
+                "put":{
+                    "tags": ["Order/Doctor","Order/Admin"],
+                    "summary": "remove product from order and update their stock amount and total price in the order",
+                    "requestBody":{
+                       "content": {
+                           "application/json":{
+                              "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "orderId":{ "type": "string", "description": "orderId"},
+                                    "productId":{ "type": "string", "description": "orderId"}
+                                }
+                              }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{"description": "updated " },
+                            "500":{"description": " problem"}
+                        }
+                }
+                
+            },
+            "/orders/doctor/cancelOrder":{
+                "put":{
+                    "tags": ["Order/Doctor","Order/Admin"],
+                    "summary": "change order status to cancel and all products will be returned to stockAmounts in DB",
+                    "requestBody":{
+                       "content": {
+                           "application/json":{
+                              "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "orderId":{ "type": "string", "description": "orderId"}
+                                }
+                              }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{"description": "cancelled " },
+                            "500":{"description": " problem"}
+                        }
+                }
+                
+            },
+            "/orders/doctor/deliverOrder":{
+                "put":{
+                    "tags": ["Order/Doctor","Order/Admin"],
+                    "summary": "change order status to delivered by admin or doctor",
+                    "requestBody":{
+                       "content": {
+                           "application/json":{
+                              "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "orderId":{ "type": "string", "description": "orderId"}
+                                }
+                              }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{"description": "delivered " },
+                            "500":{"description": " problem"}
+                        }
+                }
+                
+            },
+            "/orders/doctor/updateProducts":{
+                "put":{
+                    "tags": ["Order/Doctor","Order/Admin"],
+                    "summary": "update products for order (only if the order is pending not shipped ) when change the quantity of any product +or- that will affect total price for order and stockAmount for products",
+                    "requestBody":{
+                       "content": {
+                           "application/json":{
+                              "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "orderId":{ "type": "string", "description": "orderId"},
+                                    "products":{
+                                        "type":"array",
+                                        "items":{
+                                            "type": "object",
+                                            "properties": {
+                                                "id":{"type":"string"},
+                                                "quantity":{"type":"number"}
+                                            }
+                                        }
+                                    }
+                                }
+                              }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{"description": "updated " },
+                            "500":{"description": " problem"}
+                        }
+                }
+                
+            },
+            "/orders/admin/remove":{
+                "delete":{
+                    "tags": ["Order/Admin"],
+                    "summary": "delete order if it cancelled or delivered otherwise admin should cancel it to return products stockAmount correctly",
+                    "requestBody":{
+                       "content": {
+                           "application/json":{
+                              "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "orderId":{ "type": "string", "description": "orderId"}
+                                    }
+                                }
+                              }
+                            }
+                           }
+                       ,
+                       "responses": {
+                            "200":{"description": "deleted or not " },
+                            "500":{"description": " problem"}
+                        }
+                }
+                
+            },
+            "/orders/admin/ordersBystatus/{status}/{page}":{
+                "get":{
+                    "tags": ["Order/Admin"],
+                    "summary": "get order by status ",
+                    "parameters": [{
+                        "name":"status",
+                        "in": "path",
+                        "required": true,
+                        "description": "order status pending , shipped, delivered cancelled",
+                        "schema":{
+                            "type": "string"
+                        }
+                    },{
+                        "name":"page",
+                        "in": "path",
+                        "required": false,
+                        "description": "page conatisn 20 orders by default",
+                        "schema":{
+                            "type": "number", "default":1
+                        }
+                    }],
+                        "responses": {
+                            "200":{
+                                    "description": "orders with selected status "       
+                                },
+                                "500":{       
+                                    "description": " problem"
+                                }
+                        }
+                }
+            },
+            "/orders/admin/searchDate/{from}/{to}/{page}":{
+                "get":{
+                    "tags": ["Order/Admin"],
+                    "summary": "get orders search from to dates no more than one year differnce ",
+                    "parameters": [{
+                        "name":"from",
+                        "in": "path",
+                        "required": true,
+                        "description": "MM/DD/YY",
+                        "schema":{
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name":"to",
+                        "in": "path",
+                        "required": true,
+                        "description": "MM/DD/YY",
+                        "schema":{
+                            "type": "string"
+                        }
+                    },{
+                        "name":"page",
+                        "in": "path",
+                        "required": false,
+                        "description": "page conatisn 20 orders by default",
+                        "schema":{
+                            "type": "number", "default":1
+                        }
+                    }],
+                        "responses": {
+                            "200":{
+                                    "description": "orders with selected dirrence date "       
+                                },
+                                "500":{       
+                                    "description": " problem"
+                                }
+                        }
+                }
+            }, 
+            "/orders/admin/updateTrack":{
+                "put":{
+                    "tags": ["Order/Admin"],
+                    "summary": "note (address will be selected by user from his own addreses),update ANY  of deriver information for order",
+                    "requestBody":{
+                       "content": {
+                           "application/json":{
+                              "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "orderId":{ "type": "string", "description": "orderId"},
+                                    "date":{"type":"string","description": "MM/DD/YY"},
+                                    "time":{"type":"string","description": "HH:MM AM|PM"},
+                                    "flyBoy":{"type":"string","description": "flyboy id"},
+                                    "address":{
+                                        "$ref":"#/components/schemas/address2"                                  }
+                                }
+                              }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{"description": "updated " },
+                            "500":{"description": " problem"}
+                        }
+                }
+                
+            },
+            "/orders/admin/shipOrder":{
+                "put":{
+                    "tags": ["Order/Admin"],
+                    "summary": "note (address will be selected by user from his own addreses),update ANY  of deriver information for order and  status shipped ",
+                    "requestBody":{
+                       "content": {
+                           "application/json":{
+                              "schema":{
+                                "type": "object",
+                                "properties": {
+                                    "orderId":{ "type": "string", "description": "orderId"},
+                                    "date":{"type":"string","description": "MM/DD/YY"},
+                                    "time":{"type":"string","description": "HH:MM AM|PM"},
+                                    "flyBoy":{"type":"string","description": "flyboy id"},
+                                    "address":{
+                                        "$ref":"#/components/schemas/address2"                                  }
+                                }
+                              }
+                            }
+                           }
+                       },
+                       "responses": {
+                            "200":{"description": "updated " },
+                            "500":{"description": " problem"}
+                        }
+                }
+                
+            }
+            
+            }      
+    }
